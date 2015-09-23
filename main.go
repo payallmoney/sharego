@@ -180,7 +180,7 @@ func uploadpage(r render.Render, w http.ResponseWriter){
 }
 func videouploadpage(r render.Render, w http.ResponseWriter){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	r.HTML(200, "upload", nil)
+	r.HTML(200, "videoupload", nil)
 }
 
 func items(session sessions.Session, db *mgo.Database, r render.Render, req *http.Request , writer http.ResponseWriter)string{

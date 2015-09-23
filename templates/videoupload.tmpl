@@ -34,7 +34,7 @@
     $(function () {
         $.fn.fileinput.defaults = $.extend($.fn.fileinput.defaults, {
             browseLabel: '视频浏览',
-            browseTitle: '文件',
+            browseTitle: '视频文件',
             removeLabel: '清除',
             removeTitle: '清除',
             cancelLabel: '撤销',
@@ -45,11 +45,11 @@
             multiple: true,
             overwriteInitial: false,
             initialPreviewShowDelete: false,
-            deleteUrl: '/img/delete',
-            uploadUrl: '/img/upload',
+            deleteUrl: '/video/delete',
+            uploadUrl: '/video/upload',
             maxFileSize: 20000000,
-            dropZoneTitle: '拖拽图片这里',
-            msgSelected: '选了{n}张图片',
+            dropZoneTitle: '拖拽视频这里',
+            msgSelected: '选了{n}张视频',
             initialCaption: ""
         });
         $("input[type=file]").fileinput({
