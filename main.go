@@ -46,7 +46,7 @@ func main() {
 	m.Get("/items", items)
 	m.Any("/img/upload", imgupload)
 	m.Any("/video/upload", videoupload)
-	m.Any("/video/list", videolist)
+	m.Any("/video/list/:id", videolist)
 	m.Any("/uploadpage", uploadpage)
 	m.Any("/videoupload", videouploadpage)
 	m.Post("/img/delete", imgdelete)
