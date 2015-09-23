@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	util "github.com/sharego/util"
+	util "github.com/payallmoney/sharego/util"
 	//	"encoding/json"
 )
 
