@@ -46,6 +46,7 @@ func main() {
 	m.Get("/items", items)
 	m.Any("/img/upload", imgupload)
 	m.Any("/video/upload", videoupload)
+	m.Any("/video/list", videolist)
 	m.Any("/uploadpage", uploadpage)
 	m.Any("/videoupload", videouploadpage)
 	m.Post("/img/delete", imgdelete)
@@ -184,7 +185,7 @@ func videouploadpage(r render.Render, w http.ResponseWriter){
 }
 
 func videolist(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 	req.ParseForm()
 	ret := []map[string]string{{"src":"/updatevideo/1.mp4"},{"src":"/updatevideo/2.mp4"}}
 	r.JSON(200, ret)
