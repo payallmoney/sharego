@@ -1,8 +1,9 @@
 /gin-bin.exe
 /static/upload
+/static/uploadvideo
 /idea
 /main.exe
 /.idea
 config.ini
-.idea
+.idea~
 /gin-bin.exe~

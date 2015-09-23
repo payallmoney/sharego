@@ -47,7 +47,7 @@ func main() {
 	m.Any("/img/upload", imgupload)
 	m.Any("/video/upload", videoupload)
 	m.Any("/uploadpage", uploadpage)
-	m.Any("/video/upload", videouploadpage)
+	m.Any("/videoupload", videouploadpage)
 	m.Post("/img/delete", imgdelete)
 	m.Get("/", index)
 	//静态内容
@@ -94,8 +94,6 @@ func getMartini() *martini.ClassicMartini {
 func imgupload(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS")
-	fmt.Println("=========================111111111111111111111111111=================")
-	fmt.Println("=========================111111111111111111111111111=================")
 
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	util.CheckErr(err)
