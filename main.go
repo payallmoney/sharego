@@ -191,7 +191,6 @@ func videolist(r render.Render, params martini.Params, req *http.Request, w http
 	r.JSON(200, ret)
 }
 
-
 func items(session sessions.Session, db *mgo.Database, r render.Render, req *http.Request , writer http.ResponseWriter)string{
 	writer.Header().Set("Content-Type", "text/javascript")
 	callback := req.FormValue("callback")
