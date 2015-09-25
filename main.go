@@ -192,7 +192,7 @@ func videolist(r render.Render, params martini.Params, req *http.Request, w http
 	r.JSON(200, ret)
 }
 func videoversion(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter) {
-    ret := map[string]interface{}{"version":1,"files":[]string{"/uploadjs/ttt.js"}}
+    ret := map[string]interface{}{"version":2,"files":[]string{"/uploadjs/tasklib.js"}}
 	r.JSON(200, ret)
 }
 
