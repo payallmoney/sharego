@@ -1,62 +1,68 @@
 'use strict';
 
-angular.module('videosystem.main', ['ngRoute','ui.bootstrap'])
+angular.module('videosystem.main', ['ngRoute', 'ui.bootstrap'])
 
-    .config(['$routeProvider', function ($routeProvider) {
+    .config(['$routeProvider','$sceProvider', function ($routeProvider,$sceProvider) {
         $routeProvider.when('/main', {
             templateUrl: '/app/main/main.html',
             controller: 'MainCtrl'
         });
     }])
 
-    .controller('MainCtrl', function ($scope, Auth, $location ,$q) {
-        $scope.tabs =[];
+    .controller('MainCtrl', function ($scope, Auth, $location, $q,$http,$sce) {
+        $scope.tabs = [];
         $scope.activetext = '';
         var init = $q.defer();
-        $scope.init = function(){
-            return  init.promise;
+        $scope.init = function () {
+            return init.promise;
         };
-        //登录状态
-        //Auth.checklogin().then(function () {
-            //取出登录数据
+        //视频列表
+        $scope.videolist = [];
+        $scope.videomap = {};
+        $http.get("/video/list").then(function(ret){
+            console.log(ret.data);
+            $scope.videolist = ret.data;
+            for(var i = 0 ;i < $scope.videolist.length;i++){
+                var row = $scope.videolist[i];
+                row.src = $sce.trustAsUrl('/uploadvideo/'+row._id);
+                $scope.videomap[row._id]=row;
+            }
+        });
 
-
-        //}).catch(function () {
-        //    $location.path('/videosystem/main');
-        //});
-        var lastActive ;
+        $scope.test = ['123','321'];
+        var lastActive;
         $scope.loadTab = function (menu) {
-            console.log(menu);
-            if(menu.js){
+            //console.log(menu);
+            if (menu.js) {
                 $script(menu.js, function () {
                     var flag = false;
                     for (var i = 0; i < $scope.tabs.length; i++) {
                         if ($scope.tabs[i].text == menu.text) {
                             flag = true;
 
-                        }else{
+                        } else {
                             $scope.tabs[i].active = false;
                         }
                     }
                     if (!flag) {
-                        menu.close=true;
+                        menu.close = true;
                         $scope.tabs.push(menu)
                     }
                     menu.active = true;
                     $scope.$digest();
                 });
-            }else{
+            } else {
                 var flag = false;
                 for (var i = 0; i < $scope.tabs.length; i++) {
                     if ($scope.tabs[i].text == menu.text) {
                         flag = true;
 
-                    }else{
+                    } else {
                         $scope.tabs[i].active = false;
                     }
                 }
                 if (!flag) {
-                    menu.close=true;
+                    menu.close = true;
                     $scope.tabs.push(menu)
                 }
                 menu.active = true;
@@ -79,7 +85,7 @@ angular.module('videosystem.main', ['ngRoute','ui.bootstrap'])
             var b = $("#sidebar").hasClass("menu-compact");
 
             if ($(".sidebar-menu").closest("div").hasClass("slimScrollDiv")) {
-                $(".sidebar-menu").slimScroll({ destroy: true });
+                $(".sidebar-menu").slimScroll({destroy: true});
                 $(".sidebar-menu").attr('style', '');
             }
             if (b) {
@@ -101,18 +107,16 @@ angular.module('videosystem.main', ['ngRoute','ui.bootstrap'])
 
         $scope.user = Auth.getUser();
         //取出菜单数据
-        $scope.menu = [{
-            "text": '视频管理',
-            "js": "/app/videomanager/videomanager.js",
-            'html': '/app/videomanager/videomanager.html'
-        }];
-
-        //var dashboard = {
-        //    "text": '简介',
-        //    "js": "/app/dashboard/dashboard.js",
-        //    'html': '/app/dashboard/dashboard.html',
-        //    "close": false
-        //};
-        //$scope.loadTab(dashboard);
+        $scope.menu = [
+            {
+                "text": '视频管理',
+                "js": "/app/videomanager/videomanager.js",
+                'html': '/app/videomanager/videomanager.html'
+            },
+            {
+                "text": '客户端管理',
+                "js": "/app/clientmanager/clientmanager.js",
+                'html': '/app/clientmanager/clientmanager.html'
+            }];
         $scope.loadTab($scope.menu[0]);
     });

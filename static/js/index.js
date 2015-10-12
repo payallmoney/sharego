@@ -14,7 +14,8 @@ var app =
         'videosystem.login',
         'videosystem.main',
         'videosystem.filters'
-    ]).config(['$routeProvider', function ($routeProvider) {
+    ]).config(['$routeProvider','$sceProvider', function ($routeProvider,$sceProvider) {
+        $sceProvider.enabled(false);
         $routeProvider.otherwise({redirectTo: '/main'});
     }]).config(function ($controllerProvider, $compileProvider, $filterProvider, $provide) {
         app.controller = $controllerProvider.register;
