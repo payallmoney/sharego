@@ -12,6 +12,7 @@ app.controller('VideoManagerCtrl', function ($scope, i18nService, $modal, $log,c
             var item = data[i];
             var row = {_id:item,name:item,src:$sce.trustAsUrl('/uploadvideo/'+item)};
             $scope.$parent.videolist.push(row);
+            $scope.$parent.videomap[row._id]= row;
             $scope.$parent.$digest();
         }
     }
@@ -28,6 +29,8 @@ app.controller('VideoManagerCtrl', function ($scope, i18nService, $modal, $log,c
         $http.get("/video/changename/"+ c._id+'/'+ c.newname).then(function(ret){
             c.name = c.newname;
             c.show=false;
+            $scope.$parent.videomap[c._id]= c;
+            $scope.$parent.$digest();
         });
     }
     $scope.change_name_cancel = function(c){

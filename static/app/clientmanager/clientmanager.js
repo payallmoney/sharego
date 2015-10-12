@@ -12,10 +12,10 @@ app.controller('ClientManagerCtrl', function ($scope, i18nService, $modal, $log,
         //for (var i = 0; i < $scope.clients.length; i++) {
         //    var row = $scope.clients[i];
         //    if (row.videolist) {
-        //        row.newvideolist = [];
+        //        row.videolist = [];
         //        for (var j = 0; j < row.videolist.length; j++) {
         //            var item = row.videolist[j];
-        //            row.newvideolist.push({_id: item, new_id: item, show: false});
+        //            row.videolist.push({_id: item, new_id: item, show: false});
         //        }
         //    }
         //}
@@ -36,10 +36,10 @@ app.controller('ClientManagerCtrl', function ($scope, i18nService, $modal, $log,
 
     $scope.video_add = function (c) {
         c.show = true;
-        if (!c.newvideolist) {
-            c.newvideolist = [];
+        if (!c.videolist) {
+            c.videolist = [];
         }
-        c.newvideolist.push({show: true});
+        c.videolist.push({show: true});
         console.log(c)
     };
     $scope.video_save = function (c, v,idx) {
@@ -51,7 +51,7 @@ app.controller('ClientManagerCtrl', function ($scope, i18nService, $modal, $log,
                     v.show = false;
                 });
             } else {
-                $http.get("/video/client/videochange/" + c.id + '/' + idx + '/' + v.new_id).then(function (ret) {
+                $http.get("/video/client/videochange/" + c._id + '/' + idx + '/' + v.new_id).then(function (ret) {
                     v._id = v.new_id;
                     v.show = false;
                 });
@@ -69,17 +69,17 @@ app.controller('ClientManagerCtrl', function ($scope, i18nService, $modal, $log,
 
     $scope.video_del = function (c, v, idx) {
         console.log(c, v, idx);
-        var v = c.newvideolist[idx];
+        var v = c.videolist[idx];
 
         if (v._id) {
             console.log($scope.$parent.videomap[v._id]);
             if ($window.confirm("确定将视频\"" + $scope.$parent.videomap[v._id].name + "\"从列表中移除吗?") == 1) {
                 $http.get("/video/client/videodel/" + c._id + '/' + idx).then(function (ret) {
-                    c.newvideolist.splice(idx, 1);
+                    c.videolist.splice(idx, 1);
                 });
             }
         } else {
-            c.newvideolist.splice(idx, 1);
+            c.videolist.splice(idx, 1);
         }
     }
 
