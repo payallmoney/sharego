@@ -9,16 +9,16 @@ app.controller('ClientManagerCtrl', function ($scope, i18nService, $modal, $log,
         $scope.clients = ret.data;
         console.log(ret.data);
         $scope.clients[0].show = true;
-        for (var i = 0; i < $scope.clients.length; i++) {
-            var row = $scope.clients[i];
-            if (row.videolist) {
-                row.newvideolist = [];
-                for (var j = 0; j < row.videolist.length; j++) {
-                    var item = row.videolist[j];
-                    row.newvideolist.push({_id: item, new_id: item, show: false});
-                }
-            }
-        }
+        //for (var i = 0; i < $scope.clients.length; i++) {
+        //    var row = $scope.clients[i];
+        //    if (row.videolist) {
+        //        row.newvideolist = [];
+        //        for (var j = 0; j < row.videolist.length; j++) {
+        //            var item = row.videolist[j];
+        //            row.newvideolist.push({_id: item, new_id: item, show: false});
+        //        }
+        //    }
+        //}
     });
     $scope.client_add = function (name) {
         $http.get("/video/client/add/" + name).then(function (ret) {

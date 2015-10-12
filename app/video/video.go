@@ -13,9 +13,8 @@ import (
 	"os"
 	"github.com/satori/go.uuid"
 //	"strings"
-	"reflect"
 	"io"
-	"encoding/json"
+//	"encoding/json"
 )
 
 func Router(m martini.Router){
@@ -60,19 +59,8 @@ func videoindex(r render.Render, w http.ResponseWriter) {
 func clientlist(r render.Render, db *mgo.Database, params martini.Params, req *http.Request, w http.ResponseWriter) {
 	//w.Header().Set("Access-Control-Allow-Origin", "*")
 	result := bson.M{}
-	db.C("video_client").Find(bson.M{"_id": params["id"]}).One(&result)
-	tmp := result["videolist"];
-	fmt.Println(reflect.TypeOf(result));
-	fmt.Println(reflect.TypeOf(tmp));
-	fmt.Println([]string(result["videolist"]));
-//	bson.Mash
-//	fmt.Println(len(tmp));
-//	ary := *(*string)(unsafe.Pointer(&tmp))
-//	for  i ,v:= range *tmp{
-//		fmt.Println(i,v)
-//		//arry[i] = "/uploadvideo/"+arry[i]
-//	}
-	r.JSON(200, tmp)
+	db.C("video_client_list").Find(bson.M{"_id": params["id"]}).One(&result)
+	r.JSON(200, result["videolist"])
 }
 
 func videolist(r render.Render, db *mgo.Database, params martini.Params, req *http.Request, w http.ResponseWriter) {
@@ -114,7 +102,7 @@ func videoupload(r render.Render, params martini.Params, req *http.Request, w ht
 	m := req.MultipartForm
 
 	//get the *fileheaders
-	fmt.Println(json.Marshal(m))
+//	fmt.Println(json.Marshal(m))
 	files := m.File["file_data"]
 
 	filenames := []string{}
@@ -153,25 +141,31 @@ func changename(r render.Render, params martini.Params, req *http.Request, w htt
 
 func client_add(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter,db *mgo.Database) {
 	db.C("video_client").Insert(bson.M{"_id": params["id"]})
+	db.C("video_client_list").Insert(bson.M{"_id": params["id"]})
 }
 func client_del(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter,db *mgo.Database) {
 	db.C("video_client").Remove(bson.M{"_id": params["id"]})
+	db.C("video_client_list").Remove(bson.M{"_id": params["id"]})
 }
 
 func client_video_add(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter,db *mgo.Database) {
 	result := bson.M{}
 	db.C("video_list").Find(bson.M{"_id": params["videoid"]}).One(&result);
 	db.C("video_client").Update(bson.M{"_id": params["id"]},bson.M{"$push":bson.M{"videolist":bson.M{"_id":params["videoid"],"src":result["src"]}}})
+	db.C("video_client_list").Update(bson.M{"_id": params["id"]},bson.M{"$push":bson.M{"videolist":result["src"]}})
 }
 func client_video_del(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter,db *mgo.Database) {
 //	db.C("video_client").Remove(bson.M{"_id": params["id"] ,"videolist":params["idx"]});
 	db.C("video_client").Update(bson.M{"_id": params["id"]} , bson.M{"$unset" : bson.M{"videolist."+params["idx"] : 1 }});
 	db.C("video_client").Update(bson.M{"_id": params["id"]} , bson.M{"$pull" : bson.M{"videolist" : nil}});
+	db.C("video_client_list").Update(bson.M{"_id": params["id"]} , bson.M{"$unset" : bson.M{"videolist."+params["idx"] : 1 }});
+	db.C("video_client_list").Update(bson.M{"_id": params["id"]} , bson.M{"$pull" : bson.M{"videolist" : nil}});
 }
 
 func client_video_change(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter,db *mgo.Database) {
 	result := bson.M{}
 	db.C("video_list").Find(bson.M{"_id": params["videoid"]}).One(&result);
-	db.C("video_client").Update(bson.M{"_id": params["id"]},bson.M{"$set":bson.M{"videolist."+params["idx"]:bson.M{"videolist":bson.M{"_id":params["videoid"],"src":result["src"]}}})
+	db.C("video_client").Update(bson.M{"_id": params["id"]},bson.M{"$set":bson.M{"videolist."+params["idx"]:bson.M{"videolist":bson.M{"_id":params["videoid"],"src":result["src"]}}}})
+	db.C("video_client_list").Update(bson.M{"_id": params["id"]},bson.M{"$set":bson.M{"videolist."+params["idx"]:bson.M{"videolist":result["src"]}}})
 }
 

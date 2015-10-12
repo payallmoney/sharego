@@ -50,7 +50,7 @@
                     <span ng-click="c.show=true;c.newname=c.name;" ng-show="!c.show" style="font-weight: bold;width:100%;display: inline-block;">{{c.name}}</span>
                     <div ng-show="c.show" ><input ng-model="c.newname" style="width:190px;"><button style="width:50px;" ng-click="change_name(c)" >确定</button><button style="width:50px;" ng-click="change_name_cancel(c)" >取消</button></div>
                     <span>
-                        <video width="300px" height="160px" controls="">
+                        <video width="300px" height="160px" controls="" preload="none">
                             <source src="{{c.src}}" type="video/mp4">
                             <div class="file-preview-other">
                                 <i class="glyphicon glyphicon-file"></i>
