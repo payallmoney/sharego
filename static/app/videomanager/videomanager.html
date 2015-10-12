@@ -1,0 +1,23 @@
+<div class="fill" ng-controller="VideoManagerCtrl">
+
+    <div style="padding:20px;">
+        设备ID：<input ng-model="name"><a class="btn btn-sm btn-blue" ng-click="clientadd()" >增加设备</a>
+        <ul style="list-style: none">
+            <li  ng-repeat="c in clients">
+                <div ng-click="c.show=!c.show" style="border:1px solid #ccc;padding:5px;background-color: gainsboro;cursor: pointer;"><i
+                    class="icon glyphicon glyphicon-hdd primary" ></i>&nbsp;&nbsp;设备ID：<span
+                    style="font-weight: bold;width:200px;display: inline-block;">{{c.id}}</span>
+                &nbsp;是否调试：<input ng-model="c.debug">
+                &nbsp;js版本：<input ng-model="c.version"><a class="btn btn-sm btn-blue" ng-click="videoadd(c,v)" >增加视频</a> <a class="btn btn-sm btn-danger " ng-click="clientdel(c,v)" >删除设备</a>
+                </div>
+                <div ng-show="c.show" style="background-color: white;">
+                    <ul style="line-height: 25px;list-style: decimal;">
+                        <li ng-repeat="v in c.list"><i class="icon glyphicon glyphicon-film"></i>{{v.src}}{{v.name}}
+                            <a class="btn btn-sm btn-danger " ng-click="videodel(c,v)" >删除视频</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+

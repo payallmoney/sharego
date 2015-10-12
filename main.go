@@ -18,6 +18,7 @@ import (
 	"strings"
 	"io"
 	"encoding/json"
+	"github.com/payallmoney/sharego/app/video"
 )
 
 func main() {
@@ -45,11 +46,10 @@ func main() {
 	m.Get("/init", getinit)
 	m.Get("/items", items)
 	m.Any("/img/upload", imgupload)
-	m.Any("/video/upload", videoupload)
-	m.Any("/video/list/:id", videolist)
-	m.Any("/video/version", videoversion)
-	m.Any("/uploadpage", uploadpage)
-	m.Any("/videoupload", videouploadpage)
+
+	m.Group("/video", video.Router)
+
+
 	m.Post("/img/delete", imgdelete)
 	m.Get("/", index)
 	//静态内容
@@ -133,41 +133,6 @@ func imgupload(r render.Render, params martini.Params, req *http.Request, w http
 }
 
 
-func videoupload(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter) {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	util.CheckErr(err)
-	err = req.ParseMultipartForm(100000)
-	util.CheckErr(err)
-	//get a ref to the parsed multipart form
-	m := req.MultipartForm
-
-	//get the *fileheaders
-	fmt.Println(json.Marshal(m))
-	files := m.File["file_data"]
-
-	filenames := []string{}
-	for i, _ := range files {
-		//for each fileheader, get a handle to the actual file
-		file, _ := files[i].Open()
-		defer file.Close()
-		//create destination file making sure the path is writeable.
-		ext := filepath.Ext(files[i].Filename)
-		newfilename := uuid.NewV4().String() + ext
-		if _, err := os.Stat(newfilename); err == nil {
-			newfilename = uuid.NewV4().String()+ext
-		}
-		fmt.Println(dir + "/static/uploadvideo/" + newfilename)
-		dst, _ := os.Create(dir + "/static/uploadvideo/" + newfilename)
-		filenames = append(filenames, "/uploadvideo/"+newfilename)
-		defer dst.Close()
-		if _, err := io.Copy(dst, file); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
-	ret := map[string]string{"urls":strings.Join(filenames, ",")}
-	r.JSON(200, ret)
-}
 
 func imgdelete(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -176,25 +141,10 @@ func imgdelete(r render.Render, params martini.Params, req *http.Request, w http
 	r.JSON(200, ret)
 }
 
-func uploadpage(r render.Render, w http.ResponseWriter){
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	r.HTML(200, "upload", nil)
-}
-func videouploadpage(r render.Render, w http.ResponseWriter){
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	r.HTML(200, "videoupload", nil)
-}
 
-func videolist(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter) {
-	//w.Header().Set("Access-Control-Allow-Origin", "*")
-	req.ParseForm()
-	ret := []map[string]string{{"src":"/uploadvideo/1.mp4"},{"src":"/uploadvideo/2.mp4"}}
-	r.JSON(200, ret)
-}
-func videoversion(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter) {
-    ret := map[string]interface{}{"version":2,"files":[]string{"/uploadjs/tasklib.js"}}
-	r.JSON(200, ret)
-}
+
+
+
 
 func items(session sessions.Session, db *mgo.Database, r render.Render, req *http.Request , writer http.ResponseWriter)string{
 	writer.Header().Set("Content-Type", "text/javascript")
