@@ -52,7 +52,7 @@ func videolist(r render.Render, db *mgo.Database, params martini.Params, req *ht
 	//w.Header().Set("Access-Control-Allow-Origin", "*")
 	result := bson.M{}
 	db.C("video_list").Find(bson.M{"id": params["id"]}).One(&result)
-	r.JSON(200, result)
+	r.JSON(200, result["videolist"])
 }
 func videoversion(r render.Render, db *mgo.Database, params martini.Params, req *http.Request, w http.ResponseWriter) {
 	result := bson.M{}
