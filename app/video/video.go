@@ -152,7 +152,7 @@ func client_video_add(r render.Render, params martini.Params, req *http.Request,
 	result := bson.M{}
 	db.C("video_list").Find(bson.M{"_id": params["videoid"]}).One(&result);
 	db.C("video_client").Update(bson.M{"_id": params["id"]}, bson.M{"$push":bson.M{"videolist":bson.M{"_id":params["videoid"], "src":result["src"]}}})
-	db.C("video_client_list").Update(bson.M{"_id": params["id"]}, bson.M{"$push":bson.M{"videolist":result["src"]}})
+	db.C("video_client_list").Update(bson.M{"_id": params["id"]}, bson.M{"$push":bson.M{"videolist":bson.M{"src":result["src"]}}})
 }
 func client_video_del(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter, db *mgo.Database) {
 	//	db.C("video_client").Remove(bson.M{"_id": params["id"] ,"videolist":params["idx"]});
