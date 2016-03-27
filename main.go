@@ -21,6 +21,8 @@ import (
 	"github.com/payallmoney/sharego/app/video"
 )
 
+
+
 func main() {
 	m := getMartini()
 	store := sessions.NewCookieStore([]byte("secret123"))
@@ -29,7 +31,10 @@ func main() {
 	m.Use(render.Renderer())
 	//配置文件
 	configFile := flag.String("configfile", "config.ini", "配置文件")
-	inicfg, _ := config.ReadDefault(*configFile)
+	inicfg, err := config.ReadDefault(*configFile)
+	if err != nil {
+		panic(err)
+	}
 	m.Map(inicfg)
 	//数据库
 	db := util.GetDB(inicfg)
@@ -57,7 +62,7 @@ func main() {
 	//需要权限的内容
 //		m.Group("/admin", admin.Router, auth.Auth)
 	m.Run();
-	//	m.RunOnAddr(":3333")
+		//m.RunOnAddr(":3333")
 }
 
 func index(db *mgo.Database, r render.Render, req *http.Request, inicfg *config.Config) {
