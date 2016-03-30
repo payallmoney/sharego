@@ -19,11 +19,13 @@ import (
 	"io"
 	"encoding/json"
 	"github.com/payallmoney/sharego/app/video"
+	"log"
 )
 
 
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Llongfile)
 	m := getMartini()
 	store := sessions.NewCookieStore([]byte("secret123"))
 	m.Use(sessions.Sessions("goodshare_session", store))

@@ -36,6 +36,7 @@ func Router(m martini.Router) {
 	m.Any("/client/videochange/:id/:idx/:videoid", client_video_change)
 	m.Any("/client/videodel/:id/:idx", client_video_del)
 	m.Any("/client/del/:id", client_del)
+	m.Any("/status/:id", client_status)
 }
 
 func clients(r render.Render, db *mgo.Database, params martini.Params, req *http.Request, w http.ResponseWriter) {
@@ -176,29 +177,41 @@ func changename(r render.Render, params martini.Params, req *http.Request, w htt
 
 func client_add(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter, db *mgo.Database) {
 	db.C("video_client").Insert(bson.M{"_id": params["id"]})
-	db.C("video_client_list").Insert(bson.M{"_id": params["id"]})
 }
 func client_del(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter, db *mgo.Database) {
 	db.C("video_client").Remove(bson.M{"_id": params["id"]})
-	db.C("video_client_list").Remove(bson.M{"_id": params["id"]})
 }
+
+func client_status(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter, db *mgo.Database) {
+	ret := bson.M{}
+	result := bson.M{}
+	db.C("video_client").Find(bson.M{"_id": params["id"]}).One(&result)
+	//ret := map[string]interface{}{"version":1,"files":[]string{"/uploadjs/tasklib.js"}}
+	if(util.IsZero(result)){
+		ret["status"]="未注册"
+	}else{
+		if result["user"] == nil{
+			ret["status"]="未绑定"
+		}else if result["active"] == nil{
+			ret["status"]="未激活"
+		}else{
+			ret["status"]="已绑定"
+		}
+	}
+	r.JSON(200, ret)
+}
+
 
 func client_video_add(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter, db *mgo.Database) {
 	result := bson.M{}
 	db.C("video_list").Find(bson.M{"_id": params["videoid"]}).One(&result);
-	fmt.Println("id==========" + params["id"]);
-	fmt.Println("videoid==========" + params["videoid"]);
 	str, _ := result["src"].(string)
-	fmt.Println("src==========" + str);
 	db.C("video_client").Update(bson.M{"_id": params["id"]}, bson.M{"$push":bson.M{"videolist":bson.M{"_id":params["videoid"], "src":str}}})
-	db.C("video_client_list").Update(bson.M{"_id": params["id"]}, bson.M{"$push":bson.M{"videolist":bson.M{"src":str}}})
 }
 func client_video_del(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter, db *mgo.Database) {
 	//	db.C("video_client").Remove(bson.M{"_id": params["id"] ,"videolist":params["idx"]});
 	db.C("video_client").Update(bson.M{"_id": params["id"]}, bson.M{"$unset" : bson.M{"videolist." + params["idx"] : 1 }});
 	db.C("video_client").Update(bson.M{"_id": params["id"]}, bson.M{"$pull" : bson.M{"videolist" : nil}});
-	db.C("video_client_list").Update(bson.M{"_id": params["id"]}, bson.M{"$unset" : bson.M{"videolist." + params["idx"] : 1 }});
-	db.C("video_client_list").Update(bson.M{"_id": params["id"]}, bson.M{"$pull" : bson.M{"videolist" : nil}});
 }
 
 func client_video_change(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter, db *mgo.Database) {
@@ -206,6 +219,5 @@ func client_video_change(r render.Render, params martini.Params, req *http.Reque
 	db.C("video_list").Find(bson.M{"_id": params["videoid"]}).One(&result);
 	fmt.Println(params["id"]);
 	db.C("video_client").Update(bson.M{"_id": params["id"]}, bson.M{"$set":bson.M{"videolist." + params["idx"]:bson.M{"_id":params["videoid"], "src":result["src"]}}})
-	db.C("video_client_list").Update(bson.M{"_id": params["id"]}, bson.M{"$set":bson.M{"videolist." + params["idx"]: result["src"]}})
 }
 
