@@ -28,6 +28,15 @@ angular.module('videosystem.main', ['ngRoute', 'ui.bootstrap'])
                 $scope.videomap[row._id]=row;
             }
         });
+        $http.get("/client/version/list").then(function(ret){
+            console.log(ret.data);
+            $scope.videolist = ret.data;
+            for(var i = 0 ;i < $scope.videolist.length;i++){
+                var row = $scope.videolist[i];
+                row.src = $sce.trustAsUrl(row.src);
+                $scope.videomap[row._id]=row;
+            }
+        });
 
         $scope.test = ['123','321'];
         var lastActive;
@@ -117,6 +126,11 @@ angular.module('videosystem.main', ['ngRoute', 'ui.bootstrap'])
                 "text": '客户端管理',
                 "js": "/app/clientmanager/clientmanager.js",
                 'html': '/app/clientmanager/clientmanager.html'
+            },
+            {
+                "text": '客户端版本管理',
+                "js": "/app/clientversion/page.js",
+                'html': '/app/clientversion/page.html'
             }];
         $scope.loadTab($scope.menu[0]);
     });

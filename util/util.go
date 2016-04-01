@@ -8,6 +8,9 @@ import (
 	"io"
 	"runtime/debug"
 	"reflect"
+"strings"
+	"strconv"
+	"math"
 )
 
 
@@ -54,4 +57,23 @@ func IsZero(val interface{}) bool {
 	// Compare other types directly:
 	z := reflect.Zero(v.Type())
 	return v.Interface() == z.Interface()
+}
+
+func Version(version string) float64{
+	var ret float64
+	ret = 0
+	versions := strings.Split(version,".")
+	vints := make([]int,len(versions))
+	vfloats := make([]float64,len(versions))
+	for i:=0 ;i<len(versions);i++{
+		vints[i],_ = strconv.Atoi(versions[i])
+		vfloats[i] = float64(vints[i])
+		var f1 float64
+		var f2 float64
+		f1 = 100
+		f2 = float64(2-i)
+		ret += vfloats[i]*math.Pow(f1,f2)
+
+	}
+	return ret
 }

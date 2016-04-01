@@ -8,3 +8,5 @@ config.ini
 .idea~
 /gin-bin.exe~
 /sharego.iml
+/client.log
+/static/program

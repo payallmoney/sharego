@@ -5,7 +5,7 @@
     <div style="padding:20px;">
 
         <form method="post" enctype="multipart/form-data">
-            <input placeholder="视频" type="file"/>
+            <input placeholder="视频" type="file"  accept=".mp4 ,.avi,.rmvb"/>
         </form>
         <script>
             $(function () {
@@ -18,7 +18,7 @@
                     cancelTitle: '撤销',
                     uploadLabel: '上传',
                     uploadTitle: '上传',
-                    allowedFileExtensions: ["mp4"],
+                    allowedFileExtensions: ['mp4','avi','rmvb'],
                     multiple: true,
                     overwriteInitial: false,
                     initialPreviewShowDelete: false,
@@ -30,7 +30,7 @@
                     initialCaption: ""
                 });
                 $("input[type=file]").fileinput({
-                    'allowedFileExtensions': ['mp4'],
+                    'allowedFileExtensions': ['mp4','avi','rmvb'],
                     showRemove: false,
                     autoReplace: true,
                     dropZoneEnabled: false
