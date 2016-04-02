@@ -4,7 +4,7 @@
 
     <div style="padding:20px;">
 
-        <form method="post" enctype="multipart/form-data">
+        <form id="videomanager_upload" method="post" enctype="multipart/form-data">
             <input placeholder="视频" type="file"  accept=".mp4 ,.avi,.rmvb"/>
         </form>
         <script>
@@ -35,7 +35,7 @@
                     autoReplace: true,
                     dropZoneEnabled: false
                 });
-                $("form").on("fileuploaded", "input[type=file]", function (e, data) {
+                $("#videomanager_upload").on("fileuploaded", "input[type=file]", function (e, data) {
                     var scope = angular.element("#VideoManagerCtrl").scope();
                     scope.appendList(data.response);
                     scope.$digest();

@@ -4,14 +4,14 @@
 
     <div style="padding:20px;">
 
-        <form method="post" enctype="multipart/form-data">
-            <input placeholder="客户端执行文件" type="file"  accept=".run"/>
+        <form id="program_upform" method="post" enctype="multipart/form-data">
+            <input placeholder="客户端程序文件" type="file"  accept=".run"/>
         </form>
         <script>
             $(function () {
                 $.fn.fileinput.defaults = $.extend($.fn.fileinput.defaults, {
-                    browseLabel: '文件浏览',
-                    browseTitle: '文件浏览',
+                    browseLabel: '程序浏览',
+                    browseTitle: '程序浏览',
                     removeLabel: '清除',
                     removeTitle: '清除',
                     cancelLabel: '撤销',
@@ -20,22 +20,26 @@
                     uploadTitle: '上传',
                     allowedFileExtensions: ["run"],
                     multiple: false,
-                    overwriteInitial: false,
-                    initialPreviewShowDelete: false,
+
+                    overwriteInitial: true,
+                    initialPreviewShowDelete: true,
                     deleteUrl: '/video/program/delete',
                     uploadUrl: '/video/program/upload',
                     maxFileSize: 20000000,
-                    dropZoneTitle: '拖拽视频这里',
-                    msgSelected: '选了{n}张视频',
-                    initialCaption: ""
+                    dropZoneTitle: '拖拽程序这里',
+                    msgSelected: '选了{n}个程序',
+                    initialCaption: "",
+                    uploadAsync:true
                 });
                 $("input[type=file]").fileinput({
                     'allowedFileExtensions': ['run'],
                     showRemove: false,
                     autoReplace: true,
-                    dropZoneEnabled: false
+                    dropZoneEnabled: false,
+                    showPreview:false,
+                    initialPreview:'客户端程序'
                 });
-                $("form").on("fileuploaded", "input[type=file]", function (e, data) {
+                $("#program_upform").on("filebatchuploadsuccess", "input[type=file]", function (event, data, previewId, index) {
                     var scope = angular.element("#VideoClientCtrl").scope();
                     scope.program_append(data.response);
                     scope.$digest();

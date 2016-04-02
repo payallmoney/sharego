@@ -24,7 +24,7 @@ import (
 func programVersion(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter, db *mgo.Database) {
 	var result  bson.M
 	//db.collection.find().sort({age:-1}).limit(1)
-	db.C("video_program_version").Find(bson.M{}).Sort("-version").One(&result);
+	db.C("video_program").Find(bson.M{}).Sort("-version").One(&result);
 
 	r.JSON(200, result)
 }
@@ -76,6 +76,8 @@ func programUpload(r render.Render, params martini.Params, req *http.Request, w 
 		program :=bson.M{"_id":version,"version": version, "src":"/program/" + newfilename}
 		str ,_ := json.Marshal(program)
 		filenames = append(filenames, string(str))
+		//log.Println(string(str))
+		//filenames = append(filenames, newfilename)
 		db.C("video_program").Insert(program)
 		db.C("video_program_version").Insert(bson.M{"_id":"version","version":version})
 		db.C("video_program_version").Update(bson.M{"_id":"version"}, bson.M{"$set":bson.M{"version":version}})
@@ -99,6 +101,6 @@ func programDel(r render.Render, params martini.Params, req *http.Request, w htt
 func programList(r render.Render, db *mgo.Database, params martini.Params, req *http.Request, w http.ResponseWriter) {
 	//w.Header().Set("Access-Control-Allow-Origin", "*")
 	result := []bson.M{}
-	db.C("video_program").Find(bson.M{}).All(&result)
+	db.C("video_program").Find(bson.M{}).Sort("version").All(&result)
 	r.JSON(200, result)
 }

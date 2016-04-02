@@ -29,4 +29,6 @@ app.controller('VideoClientCtrl', function ($scope, i18nService, $modal, $log,cf
     $scope.url = function(url){
         return $sce.trustAsUrl(""+url)
     }
+
+
 });
